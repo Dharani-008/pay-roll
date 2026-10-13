@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Account settings | Payflow</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand-lockup" href="dashboard.html"><span class="brand-mark" aria-hidden="true">P</span><span class="brand-name">payflow<span>.</span></span></a>
+            <p class="nav-caption">WORKSPACE</p>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a class="nav-link" href="dashboard.html"><span class="nav-glyph" aria-hidden="true">◫</span>Overview</a>
+                <a class="nav-link" href="employees.html"><span class="nav-glyph" aria-hidden="true">♙</span>Employees</a>
+                <a class="nav-link" href="payroll.html"><span class="nav-glyph" aria-hidden="true">▤</span>Payroll</a>
+                <a class="nav-link" href="reports.html"><span class="nav-glyph" aria-hidden="true">▥</span>Reports</a>
+                <a class="nav-link" href="settings.html" aria-current="page"><span class="nav-glyph" aria-hidden="true">⚙</span>Account</a>
+            </nav>
+            <div class="sidebar-bottom"><div class="workspace-person"><span class="avatar" data-account-initials>PA</span><span class="person-meta"><strong data-account-name>Payroll admin</strong><span>Workspace administrator</span></span></div></div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar"><span class="topbar-context">Payroll operations <span aria-hidden="true">/</span> Account</span><div class="topbar-right"><span class="period-note">Account security</span><span class="topbar-avatar" data-account-initials aria-label="Account">PA</span></div></header>
+            <main class="page-content">
+                <div class="breadcrumbs"><span>Workspace</span><span aria-hidden="true">/</span><span>Account</span></div>
+                <section class="page-heading"><div><p class="eyebrow">PERSONAL ACCESS</p><h1>Account settings</h1><p class="page-subtitle">Update the name shown in your workspace and manage your password.</p></div><div class="heading-actions"><button class="button" type="button" data-logout>Sign out</button></div></section>
+                <div class="content-grid">
+                    <section class="panel">
+                        <header class="panel-header"><div><h2 class="panel-title">Profile details</h2><p class="panel-description">Your name and sign-in username</p></div></header>
+                        <div class="panel-body">
+                            <form class="settings-form" id="profileForm" action="/api/profile" method="post">
+                                <div class="field"><label for="profileName">Display name</label><input id="profileName" name="displayName" type="text" maxlength="80" required></div>
+                                <div class="field"><label for="profileUsername">Username</label><input id="profileUsername" name="username" type="text" pattern="[A-Za-z0-9._-]{3,40}" minlength="3" maxlength="40" required></div>
+                                <div class="field"><label for="profileCurrentPassword">Confirm with current password</label><input id="profileCurrentPassword" name="currentPassword" type="password" autocomplete="current-password" required></div>
+                                <p class="form-notice" id="profileNotice" role="status" aria-live="polite"></p>
+                                <button class="button button-primary" type="submit">Save profile</button>
+                            </form>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <header class="panel-header"><div><h2 class="panel-title">Change password</h2><p class="panel-description">Choose a password with at least 10 characters.</p></div></header>
+                        <div class="panel-body">
+                            <form class="settings-form" id="passwordForm" action="/api/password" method="post">
+                                <div class="field"><label for="currentPassword">Current password</label><input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required></div>
+                                <div class="field"><label for="newPassword">New password</label><input id="newPassword" name="newPassword" type="password" autocomplete="new-password" minlength="10" maxlength="256" required></div>
+                                <div class="field"><label for="confirmPassword">Confirm new password</label><input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="10" maxlength="256" required></div>
+                                <p class="form-notice" id="passwordNotice" role="status" aria-live="polite"></p>
+                                <button class="button button-primary" type="submit">Update password</button>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script>
+        async function sendForm(form, notice) {
+            notice.textContent = '';
+            notice.className = 'form-notice';
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(form))
+            });
+            const result = await response.json();
+            notice.textContent = result.message || result.error || 'Request complete.';
+            notice.classList.add(response.ok ? 'notice-success' : 'notice-error');
+            return response.ok;
+        }
+        fetch('/api/account').then(response => {
+            if (response.status === 401) {
+                location.href = '/login.html';
+                return null;
+            }
+            return response.json();
+        }).then(account => {
+            if (!account) return;
+            document.getElementById('profileName').value = account.displayName;
+            document.getElementById('profileUsername').value = account.username;
+        });
+        document.getElementById('profileForm').addEventListener('submit', async event => {
+            event.preventDefault();
+            const saved = await sendForm(event.currentTarget, document.getElementById('profileNotice'));
+            if (saved) document.getElementById('profileCurrentPassword').value = '';
+        });
+        document.getElementById('passwordForm').addEventListener('submit', async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            if (form.newPassword.value !== form.confirmPassword.value) {
+                document.getElementById('passwordNotice').textContent = 'New passwords do not match.';
+                document.getElementById('passwordNotice').className = 'form-notice notice-error';
+                return;
+            }
+            if (await sendForm(form, document.getElementById('passwordNotice'))) form.reset();
+        });
+        document.querySelector('[data-logout]').addEventListener('click', async () => {
+            await fetch('/api/logout', { method: 'POST' });
+            location.href = '/login.html';
+        });
+    </script>
+</body>
+</html>

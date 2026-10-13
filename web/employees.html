@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employees | Payflow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand-lockup" href="dashboard.html"><span class="brand-mark" aria-hidden="true">P</span><span class="brand-name">payflow<span>.</span></span></a>
+            <p class="nav-caption">WORKSPACE</p>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a class="nav-link" href="dashboard.html"><span class="nav-glyph" aria-hidden="true">◫</span>Overview</a>
+                <a class="nav-link" href="employees.html" aria-current="page"><span class="nav-glyph" aria-hidden="true">♙</span>Employees</a>
+                <a class="nav-link" href="payroll.html"><span class="nav-glyph" aria-hidden="true">▤</span>Payroll</a>
+                <a class="nav-link" href="reports.html"><span class="nav-glyph" aria-hidden="true">▥</span>Reports</a>
+                <a class="nav-link" href="settings.html"><span class="nav-glyph" aria-hidden="true">⚙</span>Account</a>
+            </nav>
+            <div class="sidebar-bottom"><div class="workspace-person"><span class="avatar" data-account-initials>PA</span><span class="person-meta"><strong data-account-name>Payroll admin</strong><span>Workspace administrator</span></span></div></div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar"><span class="topbar-context">Payroll operations <span aria-hidden="true">/</span> Employees</span><div class="topbar-right"><span class="period-note">Monday, 16 June 2025</span><span class="topbar-avatar" data-account-initials aria-label="Account">PA</span></div></header>
+            <main class="page-content">
+                <div class="breadcrumbs"><span>Workspace</span><span aria-hidden="true">/</span><span>Employees</span></div>
+                <section class="page-heading"><div><p class="eyebrow">PEOPLE DIRECTORY</p><h1>Employees</h1><p class="page-subtitle">Manage employee records, roles, and compensation.</p></div><div class="heading-actions"><button class="button" id="exportEmployees" type="button">Export list <span aria-hidden="true">↓</span></button><button class="button button-primary" id="openEmployeeDialog" type="button"><span class="button-symbol" aria-hidden="true">+</span> Add employee</button></div></section>
+                <section class="stat-grid" aria-label="Employee metrics">
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Employee records</span><span class="stat-icon" aria-hidden="true">♙</span></div><p class="stat-value" id="totalEmployees">0</p><span class="stat-foot">Loaded in this directory</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Active records</span><span class="stat-icon" aria-hidden="true">✓</span></div><p class="stat-value" id="activeEmployeeCount">0</p><span class="stat-foot">Of loaded records</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">On leave</span><span class="stat-icon gold" aria-hidden="true">◷</span></div><p class="stat-value" id="leaveEmployeeCount">0</p><span class="stat-foot">Current leave updates</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Departments</span><span class="stat-icon red" aria-hidden="true">⌖</span></div><p class="stat-value" id="departmentCount">0</p><span class="stat-foot">Represented in these records</span></article>
+                </section>
+                <section class="panel">
+                    <div class="toolbar"><div class="toolbar-group"><label class="search-field"><span class="search-mark" aria-hidden="true">⌕</span><input id="employeeSearch" type="search" placeholder="Search ID, role, or department" aria-label="Search employees"></label><select class="select-control" id="departmentFilter" aria-label="Filter by department"><option value="">All departments</option><option>Engineering</option><option>Finance</option><option>People</option><option>Operations</option><option>Sales</option></select><button class="button button-danger button-small" id="deleteEmployeeSelected" type="button" disabled>Delete selected</button></div><span class="stat-foot">Leave status can be changed per employee</span></div>
+                    <div class="table-wrap"><table id="employeeTable"><thead><tr><th><input id="selectAllEmployees" type="checkbox" aria-label="Select visible employees"></th><th>Employee ID</th><th>Department</th><th>Role</th><th>Monthly pay</th><th>Leave</th><th>Employment</th><th>Actions</th></tr></thead><tbody id="employeeRows">
+                        <tr data-employee-id="EMP-204"><td><input class="employee-check" type="checkbox" aria-label="Select employee EMP-204"></td><td><div class="employee-cell"><span class="employee-initials">ID</span><span><span class="employee-name">Employee 204</span><span class="employee-email">EMP-204</span></span></div></td><td>Engineering</td><td>Senior developer</td><td>₹92,000</td><td><select class="select-control leave-status" aria-label="Leave status for EMP-204"><option value="working">Working</option><option value="on-leave">On leave</option></select></td><td><span class="status">Active</span></td></tr>
+                        <tr data-employee-id="EMP-203"><td><input class="employee-check" type="checkbox" aria-label="Select employee EMP-203"></td><td><div class="employee-cell"><span class="employee-initials gold">ID</span><span><span class="employee-name">Employee 203</span><span class="employee-email">EMP-203</span></span></div></td><td>Finance</td><td>Finance manager</td><td>₹84,500</td><td><select class="select-control leave-status" aria-label="Leave status for EMP-203"><option value="working">Working</option><option value="on-leave">On leave</option></select></td><td><span class="status">Active</span></td></tr>
+                        <tr data-employee-id="EMP-202"><td><input class="employee-check" type="checkbox" aria-label="Select employee EMP-202"></td><td><div class="employee-cell"><span class="employee-initials rose">ID</span><span><span class="employee-name">Employee 202</span><span class="employee-email">EMP-202</span></span></div></td><td>People</td><td>Talent partner</td><td>₹68,000</td><td><select class="select-control leave-status" aria-label="Leave status for EMP-202"><option value="working">Working</option><option value="on-leave" selected>On leave</option></select></td><td><span class="status">Active</span></td></tr>
+                        <tr data-employee-id="EMP-201"><td><input class="employee-check" type="checkbox" aria-label="Select employee EMP-201"></td><td><div class="employee-cell"><span class="employee-initials">ID</span><span><span class="employee-name">Employee 201</span><span class="employee-email">EMP-201</span></span></div></td><td>Operations</td><td>Operations lead</td><td>₹76,200</td><td><select class="select-control leave-status" aria-label="Leave status for EMP-201"><option value="working">Working</option><option value="on-leave">On leave</option></select></td><td><span class="status">Active</span></td></tr>
+                        <tr data-employee-id="EMP-200"><td><input class="employee-check" type="checkbox" aria-label="Select employee EMP-200"></td><td><div class="employee-cell"><span class="employee-initials gold">ID</span><span><span class="employee-name">Employee 200</span><span class="employee-email">EMP-200</span></span></div></td><td>Engineering</td><td>Product designer</td><td>₹73,500</td><td><select class="select-control leave-status" aria-label="Leave status for EMP-200"><option value="working">Working</option><option value="on-leave">On leave</option></select></td><td><span class="status">Active</span></td></tr>
+                        <tr data-employee-id="EMP-199"><td><input class="employee-check" type="checkbox" aria-label="Select employee EMP-199"></td><td><div class="employee-cell"><span class="employee-initials rose">ID</span><span><span class="employee-name">Employee 199</span><span class="employee-email">EMP-199</span></span></div></td><td>Finance</td><td>Payroll specialist</td><td>₹61,000</td><td><select class="select-control leave-status" aria-label="Leave status for EMP-199"><option value="working">Working</option><option value="on-leave">On leave</option></select></td><td><span class="status status-inactive">Inactive</span></td></tr>
+                    </tbody></table></div>
+                    <footer class="table-footer"><span id="employeeCount"></span><div class="table-pagination" id="employeePagination" aria-label="Employee pages"></div></footer>
+                </section>
+            </main>
+        </div>
+    </div>
+    <dialog class="employee-dialog" id="employeeDialog" aria-labelledby="dialogTitle"><div class="dialog-content"><h2 id="dialogTitle">Add employee</h2><p id="dialogDescription">Create a new employee record for your directory.</p><form id="employeeForm"><div class="form-grid"><div class="field"><label for="newName">Full name</label><input id="newName" name="name" required maxlength="100" placeholder="Employee name"></div><div class="field"><label for="newEmail">Email</label><input id="newEmail" name="email" type="email" required maxlength="254" placeholder="name@example.com"></div><div class="field"><label for="newDepartment">Department</label><select id="newDepartment" name="department" required><option value="">Select department</option><option>Engineering</option><option>Finance</option><option>People</option><option>Operations</option><option>Sales</option></select></div><div class="field"><label for="newRole">Role</label><input id="newRole" name="role" required maxlength="100" placeholder="Job title"></div><div class="field"><label for="newSalary">Monthly pay (₹)</label><input id="newSalary" name="salary" type="number" min="1" max="100000000" step="1" required placeholder="50000"></div><div class="field"><label for="newEmploymentStatus">Employment</label><select id="newEmploymentStatus" name="employmentStatus" required><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div><div class="dialog-actions"><button class="button" id="cancelEmployeeDialog" type="button">Cancel</button><button class="button button-primary" type="submit">Save employee</button></div></form></div></dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>
+        const employeeSearch = document.getElementById('employeeSearch');
+        const departmentFilter = document.getElementById('departmentFilter');
+        const employeeRows = document.getElementById('employeeRows');
+        const employeeCount = document.getElementById('employeeCount');
+        const employeeDialog = document.getElementById('employeeDialog');
+        const toast = document.getElementById('toast');
+        const pageSize = 3;
+        let currentPage = 1;
+        let editingEmployeeId = null;
+        const deletedEmployeeIds = new Set(JSON.parse(localStorage.getItem('payflow.deletedEmployees') || '[]'));
+        const savedLeaveStatuses = JSON.parse(localStorage.getItem('payflow.employeeLeaveStatuses') || '{}');
+        const createdEmployees = JSON.parse(localStorage.getItem('payflow.createdEmployees') || '[]');
+        const employeeUpdates = JSON.parse(localStorage.getItem('payflow.employeeUpdates') || '{}');
+        const knownIds = [
+            ...[...employeeRows.rows].map(row => Number(row.dataset.employeeId.replace('EMP-', ''))),
+            ...createdEmployees.map(record => Number(record.id.replace('EMP-', ''))),
+            ...[...deletedEmployeeIds].map(id => Number(id.replace('EMP-', '')))
+        ];
+        let nextEmployeeId = Math.max(204, ...knownIds) + 1;
+
+        function createEmployeeRow(record) {
+            const row = document.createElement('tr');
+            row.dataset.employeeId = record.id;
+            const checkCell = document.createElement('td');
+            const check = document.createElement('input');
+            check.className = 'employee-check';
+            check.type = 'checkbox';
+            check.setAttribute('aria-label', `Select employee ${record.id}`);
+            checkCell.append(check);
+            row.append(checkCell);
+
+            const identityCell = document.createElement('td');
+            const identity = document.createElement('div');
+            identity.className = 'employee-cell';
+            const initials = document.createElement('span');
+            initials.className = 'employee-initials';
+            initials.textContent = 'ID';
+            const details = document.createElement('span');
+            const employeeName = document.createElement('span');
+            employeeName.className = 'employee-name';
+            employeeName.textContent = record.name || `Employee ${record.id.replace('EMP-', '')}`;
+            const employeeId = document.createElement('span');
+            employeeId.className = 'employee-email';
+            employeeId.textContent = record.email || record.id;
+            details.append(employeeName, employeeId);
+            identity.append(initials, details);
+            identityCell.append(identity);
+            row.append(identityCell);
+
+            for (const value of [record.department, record.role, `₹${Number(record.salary).toLocaleString('en-IN')}`]) {
+                const cell = document.createElement('td');
+                cell.textContent = value;
+                row.append(cell);
+            }
+
+            const leaveCell = document.createElement('td');
+            const leaveSelect = document.createElement('select');
+            leaveSelect.className = 'select-control leave-status';
+            leaveSelect.setAttribute('aria-label', `Leave status for ${record.id}`);
+            for (const [value, label] of [['working', 'Working'], ['on-leave', 'On leave']]) {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                leaveSelect.append(option);
+            }
+            leaveSelect.value = savedLeaveStatuses[record.id] || record.leaveStatus || 'working';
+            leaveCell.append(leaveSelect);
+            row.append(leaveCell);
+
+            const statusCell = document.createElement('td');
+            const status = document.createElement('span');
+            const isActive = (record.employmentStatus || 'active') === 'active';
+            status.className = isActive ? 'status' : 'status status-inactive';
+            status.textContent = isActive ? 'Active' : 'Inactive';
+            statusCell.append(status);
+            row.append(statusCell);
+            appendEditAction(row);
+            return row;
+        }
+
+        function appendEditAction(row) {
+            const actionCell = document.createElement('td');
+            const editButton = document.createElement('button');
+            editButton.className = 'button button-small';
+            editButton.type = 'button';
+            editButton.dataset.action = 'edit';
+            editButton.textContent = 'Edit';
+            editButton.setAttribute('aria-label', `Edit employee ${row.dataset.employeeId}`);
+            actionCell.append(editButton);
+            row.append(actionCell);
+        }
+
+        for (const row of [...employeeRows.rows]) {
+            if (deletedEmployeeIds.has(row.dataset.employeeId)) {
+                row.remove();
+                continue;
+            }
+            const update = employeeUpdates[row.dataset.employeeId];
+            if (update) {
+                row.querySelector('.employee-name').textContent = update.name;
+                row.querySelector('.employee-email').textContent = update.email || row.dataset.employeeId;
+                row.cells[2].textContent = update.department;
+                row.cells[3].textContent = update.role;
+                row.cells[4].textContent = `₹${Number(update.salary).toLocaleString('en-IN')}`;
+                const status = row.cells[6].querySelector('.status');
+                const isActive = update.employmentStatus === 'active';
+                status.className = isActive ? 'status' : 'status status-inactive';
+                status.textContent = isActive ? 'Active' : 'Inactive';
+            }
+            const leaveStatus = row.querySelector('.leave-status');
+            leaveStatus.value = savedLeaveStatuses[row.dataset.employeeId] || leaveStatus.value;
+            appendEditAction(row);
+        }
+        const retainedEmployees = createdEmployees.filter(record => !deletedEmployeeIds.has(record.id));
+        if (retainedEmployees.length !== createdEmployees.length) {
+            createdEmployees.splice(0, createdEmployees.length, ...retainedEmployees);
+            localStorage.setItem('payflow.createdEmployees', JSON.stringify(createdEmployees));
+        }
+        for (const record of createdEmployees) employeeRows.append(createEmployeeRow(record));
+
+        function updateEmployeeMetrics() {
+            const rows = [...employeeRows.rows];
+            const activeCount = rows.filter(row => !row.cells[6].querySelector('.status').classList.contains('status-inactive')).length;
+            const leaveCount = rows.filter(row => row.querySelector('.leave-status').value === 'on-leave').length;
+            const departmentCount = new Set(rows.map(row => row.cells[2].textContent.trim())).size;
+            document.getElementById('totalEmployees').textContent = rows.length.toLocaleString();
+            document.getElementById('activeEmployeeCount').textContent = activeCount.toLocaleString();
+            document.getElementById('leaveEmployeeCount').textContent = leaveCount.toLocaleString();
+            document.getElementById('departmentCount').textContent = departmentCount.toLocaleString();
+        }
+
+        function filterEmployees() {
+            const query = employeeSearch.value.trim().toLowerCase();
+            const department = departmentFilter.value;
+            const matchingRows = [];
+            for (const row of employeeRows.rows) {
+                const searchableText = [row.cells[1].textContent, row.cells[2].textContent, row.cells[3].textContent]
+                    .join(' ').toLowerCase();
+                const matches = searchableText.includes(query) && (!department || row.cells[2].textContent === department);
+                row.dataset.matchesFilter = String(matches);
+                if (matches) matchingRows.push(row);
+            }
+            const pageCount = Math.max(1, Math.ceil(matchingRows.length / pageSize));
+            currentPage = Math.min(currentPage, pageCount);
+            const pageStart = (currentPage - 1) * pageSize;
+            for (const row of employeeRows.rows) {
+                const matchIndex = matchingRows.indexOf(row);
+                row.hidden = matchIndex < pageStart || matchIndex >= pageStart + pageSize;
+            }
+            const firstRecord = matchingRows.length ? pageStart + 1 : 0;
+            const lastRecord = Math.min(pageStart + pageSize, matchingRows.length);
+            employeeCount.textContent = matchingRows.length
+                ? `Showing ${firstRecord}–${lastRecord} of ${matchingRows.length} loaded records`
+                : 'No employee records match these filters';
+            renderPagination(pageCount);
+            updateEmployeeSelection();
+        }
+
+        function renderPagination(pageCount) {
+            const pagination = document.getElementById('employeePagination');
+            pagination.replaceChildren();
+            if (pageCount < 2) return;
+            const addPageButton = (label, page, current = false, ariaLabel = label) => {
+                const button = document.createElement('button');
+                button.className = `page-number${current ? ' current' : ''}`;
+                button.type = 'button';
+                button.textContent = label;
+                button.setAttribute('aria-label', ariaLabel);
+                if (current) button.setAttribute('aria-current', 'page');
+                button.addEventListener('click', () => {
+                    currentPage = page;
+                    filterEmployees();
+                });
+                pagination.append(button);
+            };
+            addPageButton('‹', Math.max(1, currentPage - 1), false, 'Previous page');
+            for (let page = 1; page <= pageCount; page += 1) addPageButton(String(page), page, page === currentPage, `Page ${page}`);
+            addPageButton('›', Math.min(pageCount, currentPage + 1), false, 'Next page');
+        }
+
+        function updateEmployeeSelection() {
+            const visibleChecks = [...employeeRows.querySelectorAll('tr:not([hidden]) .employee-check')];
+            const selectedChecks = visibleChecks.filter(check => check.checked);
+            const anySelected = employeeRows.querySelector('.employee-check:checked') !== null;
+            document.getElementById('deleteEmployeeSelected').disabled = !anySelected;
+            const selectAll = document.getElementById('selectAllEmployees');
+            selectAll.checked = visibleChecks.length > 0 && selectedChecks.length === visibleChecks.length;
+            selectAll.indeterminate = selectedChecks.length > 0 && selectedChecks.length < visibleChecks.length;
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('visible');
+            window.setTimeout(() => toast.classList.remove('visible'), 2600);
+        }
+
+        employeeSearch.addEventListener('input', () => { currentPage = 1; filterEmployees(); });
+        departmentFilter.addEventListener('change', () => { currentPage = 1; filterEmployees(); });
+        document.getElementById('selectAllEmployees').addEventListener('change', event => {
+            for (const check of employeeRows.querySelectorAll('tr:not([hidden]) .employee-check')) check.checked = event.currentTarget.checked;
+            updateEmployeeSelection();
+        });
+        employeeRows.addEventListener('change', event => {
+            if (!event.target.matches('.leave-status')) return;
+            const row = event.target.closest('tr');
+            savedLeaveStatuses[row.dataset.employeeId] = event.target.value;
+            localStorage.setItem('payflow.employeeLeaveStatuses', JSON.stringify(savedLeaveStatuses));
+            updateEmployeeMetrics();
+            showToast(`Leave status updated for ${row.dataset.employeeId}.`);
+        });
+        employeeRows.addEventListener('change', event => {
+            if (event.target.matches('.employee-check')) updateEmployeeSelection();
+        });
+        document.getElementById('deleteEmployeeSelected').addEventListener('click', () => {
+            const selectedRows = [...employeeRows.querySelectorAll('tr')]
+                .filter(row => row.querySelector('.employee-check').checked);
+            if (!selectedRows.length || !confirm(`Delete ${selectedRows.length} selected employee record(s)?`)) return;
+            for (const row of selectedRows) {
+                deletedEmployeeIds.add(row.dataset.employeeId);
+                delete savedLeaveStatuses[row.dataset.employeeId];
+                const createdIndex = createdEmployees.findIndex(record => record.id === row.dataset.employeeId);
+                if (createdIndex !== -1) createdEmployees.splice(createdIndex, 1);
+                row.remove();
+            }
+            localStorage.setItem('payflow.deletedEmployees', JSON.stringify([...deletedEmployeeIds]));
+            localStorage.setItem('payflow.employeeLeaveStatuses', JSON.stringify(savedLeaveStatuses));
+            localStorage.setItem('payflow.createdEmployees', JSON.stringify(createdEmployees));
+            updateEmployeeMetrics();
+            filterEmployees();
+            showToast(`${selectedRows.length} employee record(s) deleted.`);
+        });
+        document.getElementById('openEmployeeDialog').addEventListener('click', () => {
+            editingEmployeeId = null;
+            document.getElementById('employeeForm').reset();
+            document.getElementById('newEmail').required = true;
+            document.getElementById('dialogTitle').textContent = 'Add employee';
+            document.getElementById('dialogDescription').textContent = 'Create a new employee record for your directory.';
+            employeeDialog.showModal();
+        });
+        document.getElementById('cancelEmployeeDialog').addEventListener('click', () => {
+            document.getElementById('newEmail').required = true;
+            employeeDialog.close();
+        });
+        employeeRows.addEventListener('click', event => {
+            const button = event.target.closest('[data-action="edit"]');
+            if (!button) return;
+            const row = button.closest('tr');
+            editingEmployeeId = row.dataset.employeeId;
+            document.getElementById('dialogTitle').textContent = 'Edit employee';
+            document.getElementById('dialogDescription').textContent = `Update details for ${editingEmployeeId}.`;
+            document.getElementById('newName').value = row.querySelector('.employee-name').textContent;
+            document.getElementById('newEmail').value = row.querySelector('.employee-email').textContent === editingEmployeeId
+                ? ''
+                : row.querySelector('.employee-email').textContent;
+            document.getElementById('newDepartment').value = row.cells[2].textContent;
+            document.getElementById('newRole').value = row.cells[3].textContent;
+            document.getElementById('newSalary').value = row.cells[4].textContent.replace(/[^\d]/g, '');
+            document.getElementById('newEmploymentStatus').value =
+                row.cells[6].querySelector('.status').classList.contains('status-inactive') ? 'inactive' : 'active';
+            document.getElementById('newEmail').required = false;
+            employeeDialog.showModal();
+        });
+        document.getElementById('employeeForm').addEventListener('submit', event => {
+            event.preventDefault();
+            const wasEditing = Boolean(editingEmployeeId);
+            const data = new FormData(event.currentTarget);
+            const record = {
+                id: editingEmployeeId || `EMP-${nextEmployeeId++}`,
+                name: String(data.get('name')).trim(),
+                email: String(data.get('email')).trim(),
+                department: String(data.get('department')),
+                role: String(data.get('role')),
+                salary: Number(data.get('salary')),
+                employmentStatus: String(data.get('employmentStatus')),
+                leaveStatus: editingEmployeeId
+                    ? employeeRows.querySelector(`tr[data-employee-id="${editingEmployeeId}"] .leave-status`).value
+                    : 'working'
+            };
+            if (editingEmployeeId) {
+                const row = employeeRows.querySelector(`tr[data-employee-id="${editingEmployeeId}"]`);
+                const createdIndex = createdEmployees.findIndex(employee => employee.id === editingEmployeeId);
+                if (createdIndex === -1) {
+                    employeeUpdates[editingEmployeeId] = record;
+                    localStorage.setItem('payflow.employeeUpdates', JSON.stringify(employeeUpdates));
+                } else {
+                    createdEmployees[createdIndex] = record;
+                    localStorage.setItem('payflow.createdEmployees', JSON.stringify(createdEmployees));
+                }
+                row.replaceWith(createEmployeeRow(record));
+            } else {
+                createdEmployees.push(record);
+                localStorage.setItem('payflow.createdEmployees', JSON.stringify(createdEmployees));
+                employeeRows.prepend(createEmployeeRow(record));
+            }
+            document.getElementById('newEmail').required = true;
+            updateEmployeeMetrics();
+            event.currentTarget.reset();
+            employeeDialog.close();
+            editingEmployeeId = null;
+            document.getElementById('dialogTitle').textContent = 'Add employee';
+            document.getElementById('dialogDescription').textContent = 'Create a new employee record for your directory.';
+            currentPage = 1;
+            filterEmployees();
+            showToast(wasEditing ? 'Employee details updated.' : 'Employee record saved.');
+        });
+
+        document.getElementById('exportEmployees').addEventListener('click', () => {
+            const rows = [['Employee ID', 'Department', 'Role', 'Monthly pay', 'Leave status', 'Employment status']];
+            for (const row of employeeRows.rows) {
+                if (row.dataset.matchesFilter !== 'true') continue;
+                rows.push([
+                    row.dataset.employeeId,
+                    row.cells[2].innerText.trim(),
+                    row.cells[3].innerText.trim(),
+                    row.cells[4].innerText.trim(),
+                    row.querySelector('.leave-status').selectedOptions[0].textContent,
+                    row.cells[6].innerText.trim()
+                ]);
+            }
+            const csv = rows.map(row => row.map(value => `"${value.replaceAll('"', '""')}"`).join(',')).join('\n');
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+            link.download = 'employees.csv';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        });
+
+        updateEmployeeMetrics();
+        filterEmployees();
+    </script>
+    <script src="app.js" defer></script>
+</body>
+</html>

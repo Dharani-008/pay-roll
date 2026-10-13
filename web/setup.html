@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f9f7">
+    <title>Set up access | Payflow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <main class="login-layout">
+        <section class="login-form-panel" aria-labelledby="setup-title">
+            <div class="login-form-inner">
+                <a class="brand-lockup login-brand" href="/" aria-label="Payflow home"><span class="brand-mark" aria-hidden="true">P</span><span class="brand-name">payflow<span>.</span></span></a>
+                <p class="eyebrow">FIRST-TIME SETUP</p>
+                <h1 class="login-heading" id="setup-title">Create workspace access</h1>
+                <p class="login-copy">Choose the name and credentials for your account.</p>
+                <form class="login-form" id="setupForm" action="/api/setup" method="post">
+                    <div class="field"><label for="displayName">Display name</label><input id="displayName" name="displayName" type="text" autocomplete="name" maxlength="80" required></div>
+                    <div class="field"><label for="username">Username</label><input id="username" name="username" type="text" autocomplete="username" minlength="3" maxlength="40" required><span class="stat-foot">Use 3–40 characters.</span></div>
+                    <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="new-password" minlength="10" maxlength="256" required><span class="stat-foot">Use at least 10 characters.</span></div>
+                    <p class="form-notice" id="setupNotice" role="status" aria-live="polite"></p>
+                    <button class="button button-primary" type="submit">Create account <span aria-hidden="true">→</span></button>
+                </form>
+                <p class="login-support">Account details are stored on this computer.</p>
+            </div>
+        </section>
+        <aside class="login-aside" aria-label="Account security">
+            <div class="login-aside-top">PAYFLOW / PRIVATE WORKSPACE</div>
+            <div class="login-aside-content">
+                <p class="eyebrow" style="color:#b6d8ca">ACCOUNT SECURITY</p>
+                <h2>Your access, under your control.</h2>
+                <div class="login-aside-list">
+                    <div class="login-aside-row"><span class="login-check" aria-hidden="true">✓</span> No preset account or password</div>
+                    <div class="login-aside-row"><span class="login-check" aria-hidden="true">✓</span> Password saved as a salted hash</div>
+                    <div class="login-aside-row"><span class="login-check" aria-hidden="true">✓</span> Workspace available on this computer only</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+    <script>
+        const form = document.getElementById('setupForm');
+        const notice = document.getElementById('setupNotice');
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
+            notice.textContent = '';
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(form))
+            });
+            const result = await response.json();
+            if (response.ok) {
+                location.href = result.redirect;
+            } else {
+                notice.textContent = result.error || 'Could not create the account.';
+                notice.classList.add('notice-error');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payroll | Payflow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand-lockup" href="dashboard.html"><span class="brand-mark" aria-hidden="true">P</span><span class="brand-name">payflow<span>.</span></span></a>
+            <p class="nav-caption">WORKSPACE</p>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a class="nav-link" href="dashboard.html"><span class="nav-glyph" aria-hidden="true">◫</span>Overview</a>
+                <a class="nav-link" href="employees.html"><span class="nav-glyph" aria-hidden="true">♙</span>Employees</a>
+                <a class="nav-link" href="payroll.html" aria-current="page"><span class="nav-glyph" aria-hidden="true">▤</span>Payroll</a>
+                <a class="nav-link" href="reports.html"><span class="nav-glyph" aria-hidden="true">▥</span>Reports</a>
+                <a class="nav-link" href="settings.html"><span class="nav-glyph" aria-hidden="true">⚙</span>Account</a>
+            </nav>
+            <div class="sidebar-bottom"><div class="workspace-person"><span class="avatar" data-account-initials>PA</span><span class="person-meta"><strong data-account-name>Payroll admin</strong><span>Workspace administrator</span></span></div></div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar"><span class="topbar-context">Payroll operations <span aria-hidden="true">/</span> Payroll</span><div class="topbar-right"><span class="period-note">Monday, 16 June 2025</span><span class="topbar-avatar" data-account-initials aria-label="Account">PA</span></div></header>
+            <main class="page-content">
+                <div class="breadcrumbs"><span>Workspace</span><span aria-hidden="true">/</span><span>Payroll</span></div>
+                <section class="page-heading"><div><p class="eyebrow">PAY CYCLE · JUNE 2025</p><h1>Payroll processing</h1><p class="page-subtitle">Review estimates and leave adjustments before queueing records for approval. New employees use 8% allowance and 12% base-deduction estimates; this does not issue payment.</p></div><div class="heading-actions"><span class="status status-pending" id="runStatus">In review</span><button class="button button-primary" id="preparePayroll" type="button" title="Queues selected records for approval; it does not pay them." disabled>Mark selected ready</button></div></section>
+                <section class="stat-grid" aria-label="Payroll totals">
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Gross payroll</span><span class="stat-icon" aria-hidden="true">₹</span></div><p class="stat-value" id="grossPayrollTotal">₹0</p><span class="stat-foot">Before deductions</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Total deductions</span><span class="stat-icon gold" aria-hidden="true">−</span></div><p class="stat-value" id="deductionPayrollTotal">₹0</p><span class="stat-foot">Tax, benefits, and other</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Net pay</span><span class="stat-icon" aria-hidden="true">✓</span></div><p class="stat-value" id="netPayrollTotal">₹0</p><span class="stat-foot">Ready after approval</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Employees in run</span><span class="stat-icon gold" aria-hidden="true">♙</span></div><p class="stat-value" id="payrollEmployeeTotal">0</p><span class="stat-foot">Current payroll records</span></article>
+                </section>
+                <section class="panel">
+                    <header class="panel-header"><div><h2 class="panel-title">June payroll batch</h2><p class="panel-description">Pay date 30 June 2025 · Monthly salary cycle</p></div><a class="text-link" href="reports.html">View payroll report&nbsp; →</a></header>
+                    <div class="toolbar"><div class="toolbar-group"><label class="search-field"><span class="search-mark" aria-hidden="true">⌕</span><input id="payrollSearch" type="search" placeholder="Search employee" aria-label="Search payroll employees"></label><span class="stat-foot" id="selectionCount">0 selected</span><button class="button button-danger button-small" id="deletePayrollSelected" type="button" disabled>Delete selected</button></div><span class="stat-foot">Amounts in INR · verify estimated deductions before approval</span></div>
+                    <div class="table-wrap"><table id="payrollTable"><thead><tr><th><input id="selectAll" type="checkbox" aria-label="Select visible employees"></th><th>Employee</th><th>Basic pay</th><th>Allowances</th><th>Leave days</th><th>Deductions</th><th>Net pay</th><th>Status</th></tr></thead><tbody id="payrollRows">
+                        <tr data-employee-id="EMP-204" data-basic-pay="92000" data-allowances="8000" data-base-deduction="11200"><td><input class="payroll-check" type="checkbox" aria-label="Select employee EMP-204"></td><td><span class="employee-name">Employee 204</span><span class="employee-email">EMP-204 · Engineering</span></td><td>₹92,000</td><td>₹8,000</td><td><select class="select-control leave-days" aria-label="Unpaid leave days for EMP-204"><option value="0">0 days</option><option value="1">1 day</option><option value="2">2 days</option><option value="3">3 days</option><option value="5">5 days</option></select></td><td class="deduction-value">₹11,200</td><td><strong class="net-pay-value">₹88,800</strong></td><td><span class="status">Verified</span></td></tr>
+                        <tr data-employee-id="EMP-203" data-basic-pay="84500" data-allowances="7500" data-base-deduction="10400"><td><input class="payroll-check" type="checkbox" aria-label="Select employee EMP-203"></td><td><span class="employee-name">Employee 203</span><span class="employee-email">EMP-203 · Finance</span></td><td>₹84,500</td><td>₹7,500</td><td><select class="select-control leave-days" aria-label="Unpaid leave days for EMP-203"><option value="0">0 days</option><option value="1">1 day</option><option value="2">2 days</option><option value="3">3 days</option><option value="5">5 days</option></select></td><td class="deduction-value">₹10,400</td><td><strong class="net-pay-value">₹81,600</strong></td><td><span class="status">Verified</span></td></tr>
+                        <tr data-employee-id="EMP-202" data-basic-pay="68000" data-allowances="5000" data-base-deduction="7200"><td><input class="payroll-check" type="checkbox" aria-label="Select employee EMP-202"></td><td><span class="employee-name">Employee 202</span><span class="employee-email">EMP-202 · People</span></td><td>₹68,000</td><td>₹5,000</td><td><select class="select-control leave-days" aria-label="Unpaid leave days for EMP-202"><option value="0">0 days</option><option value="1">1 day</option><option value="2">2 days</option><option value="3">3 days</option><option value="5">5 days</option></select></td><td class="deduction-value">₹7,200</td><td><strong class="net-pay-value">₹65,800</strong></td><td><span class="status status-pending">Review</span></td></tr>
+                        <tr data-employee-id="EMP-201" data-basic-pay="76200" data-allowances="6500" data-base-deduction="9100"><td><input class="payroll-check" type="checkbox" aria-label="Select employee EMP-201"></td><td><span class="employee-name">Employee 201</span><span class="employee-email">EMP-201 · Operations</span></td><td>₹76,200</td><td>₹6,500</td><td><select class="select-control leave-days" aria-label="Unpaid leave days for EMP-201"><option value="0">0 days</option><option value="1">1 day</option><option value="2">2 days</option><option value="3">3 days</option><option value="5">5 days</option></select></td><td class="deduction-value">₹9,100</td><td><strong class="net-pay-value">₹73,600</strong></td><td><span class="status">Verified</span></td></tr>
+                        <tr data-employee-id="EMP-200" data-basic-pay="73500" data-allowances="6000" data-base-deduction="8800"><td><input class="payroll-check" type="checkbox" aria-label="Select employee EMP-200"></td><td><span class="employee-name">Employee 200</span><span class="employee-email">EMP-200 · Engineering</span></td><td>₹73,500</td><td>₹6,000</td><td><select class="select-control leave-days" aria-label="Unpaid leave days for EMP-200"><option value="0">0 days</option><option value="1">1 day</option><option value="2">2 days</option><option value="3">3 days</option><option value="5">5 days</option></select></td><td class="deduction-value">₹8,800</td><td><strong class="net-pay-value">₹70,700</strong></td><td><span class="status status-review">Missing tax ID</span></td></tr>
+                    </tbody></table></div>
+                    <footer class="table-footer"><span id="payrollCount"></span><div class="table-pagination" id="payrollPagination" aria-label="Payroll pages"></div></footer>
+                </section>
+                <section class="panel" style="margin-top:18px"><header class="panel-header"><div><h2 class="panel-title">Run progress</h2><p class="panel-description">Payroll checks completed for this cycle</p></div><span class="stat-foot">Current batch status</span></header><div class="panel-body"><div class="run-summary"><span class="run-label">Employee records verified</span><span class="run-value" id="verifiedPayrollCount">0 / 0</span><div class="progress-track run-progress" id="payrollProgress" role="progressbar" aria-label="Payroll verification progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" style="width:0%"></div></div><span class="run-label">Items needing attention</span><span class="run-value" id="attentionPayrollCount">0 records</span></div></div></section>
+            </main>
+        </div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>
+        const payrollRows = document.getElementById('payrollRows');
+        const selectAll = document.getElementById('selectAll');
+        const prepareButton = document.getElementById('preparePayroll');
+        const selectionCount = document.getElementById('selectionCount');
+        const payrollSearch = document.getElementById('payrollSearch');
+        const pageSize = 3;
+        let currentPage = 1;
+        const deletedEmployeeIds = new Set(JSON.parse(localStorage.getItem('payflow.deletedEmployees') || '[]'));
+        const deletedPayrollIds = new Set(JSON.parse(localStorage.getItem('payflow.deletedPayroll') || '[]'));
+        const savedLeaveDays = JSON.parse(localStorage.getItem('payflow.leaveDays') || '{}');
+        const savedPayrollStatuses = JSON.parse(localStorage.getItem('payflow.payrollStatuses') || '{}');
+        const createdEmployees = JSON.parse(localStorage.getItem('payflow.createdEmployees') || '[]');
+        const employeeUpdates = JSON.parse(localStorage.getItem('payflow.employeeUpdates') || '{}');
+
+        for (const row of [...payrollRows.rows]) {
+            if (deletedEmployeeIds.has(row.dataset.employeeId) || deletedPayrollIds.has(row.dataset.employeeId)) {
+                row.remove();
+                continue;
+            }
+            const update = employeeUpdates[row.dataset.employeeId];
+            if (update) {
+                row.dataset.basicPay = String(update.salary);
+                row.dataset.allowances = String(Math.round(update.salary * 0.08));
+                row.dataset.baseDeduction = String(Math.round(update.salary * 0.12));
+                row.querySelector('.employee-name').textContent = update.name;
+                row.querySelector('.employee-email').textContent = `${row.dataset.employeeId} · ${update.department}`;
+                row.cells[2].textContent = formatCurrency(update.salary);
+                row.cells[3].textContent = formatCurrency(Math.round(update.salary * 0.08));
+                if (update.employmentStatus !== 'active') {
+                    row.remove();
+                    continue;
+                }
+            }
+            const days = savedLeaveDays[row.dataset.employeeId] || '0';
+            row.querySelector('.leave-days').value = days;
+            const savedStatus = savedPayrollStatuses[row.dataset.employeeId];
+            if (savedStatus) {
+                const status = row.querySelector('td:last-child .status');
+                status.textContent = savedStatus;
+                status.className = 'status';
+            }
+            updatePayrollAmounts(row);
+        }
+
+        const existingPayrollIds = new Set([...payrollRows.rows].map(row => row.dataset.employeeId));
+        const additionalEmployees = [
+            ...Object.entries(employeeUpdates).map(([id, employee]) => ({ ...employee, id })),
+            ...createdEmployees
+        ];
+        for (const employee of additionalEmployees) {
+            if (existingPayrollIds.has(employee.id) || deletedEmployeeIds.has(employee.id)
+                || deletedPayrollIds.has(employee.id) || employee.employmentStatus === 'inactive') continue;
+            const row = createPayrollRow(employee);
+            payrollRows.append(row);
+            existingPayrollIds.add(employee.id);
+            updatePayrollAmounts(row);
+        }
+
+        function createPayrollRow(employee) {
+            const row = document.createElement('tr');
+            const basic = Number(employee.salary);
+            const allowances = Math.round(basic * 0.08);
+            const deduction = Math.round(basic * 0.12);
+            row.dataset.employeeId = employee.id;
+            row.dataset.basicPay = String(basic);
+            row.dataset.allowances = String(allowances);
+            row.dataset.baseDeduction = String(deduction);
+            const checkboxCell = document.createElement('td');
+            const checkbox = document.createElement('input');
+            checkbox.className = 'payroll-check';
+            checkbox.type = 'checkbox';
+            checkbox.setAttribute('aria-label', `Select employee ${employee.id}`);
+            checkboxCell.append(checkbox);
+            row.append(checkboxCell);
+            const identityCell = document.createElement('td');
+            const name = document.createElement('span');
+            name.className = 'employee-name';
+            name.textContent = employee.name;
+            const details = document.createElement('span');
+            details.className = 'employee-email';
+            details.textContent = `${employee.id} · ${employee.department}`;
+            identityCell.append(name, details);
+            row.append(identityCell);
+            for (const amount of [basic, allowances]) {
+                const cell = document.createElement('td');
+                cell.textContent = formatCurrency(amount);
+                row.append(cell);
+            }
+            const leaveCell = document.createElement('td');
+            const leaveSelect = document.createElement('select');
+            leaveSelect.className = 'select-control leave-days';
+            leaveSelect.setAttribute('aria-label', `Unpaid leave days for ${employee.id}`);
+            for (const day of [0, 1, 2, 3, 5]) {
+                const option = document.createElement('option');
+                option.value = String(day);
+                option.textContent = `${day} ${day === 1 ? 'day' : 'days'}`;
+                leaveSelect.append(option);
+            }
+            leaveSelect.value = savedLeaveDays[employee.id] || '0';
+            leaveCell.append(leaveSelect);
+            row.append(leaveCell);
+            const deductionCell = document.createElement('td');
+            deductionCell.className = 'deduction-value';
+            row.append(deductionCell);
+            const netCell = document.createElement('td');
+            const net = document.createElement('strong');
+            net.className = 'net-pay-value';
+            netCell.append(net);
+            row.append(netCell);
+            const statusCell = document.createElement('td');
+            const status = document.createElement('span');
+            status.className = 'status';
+            status.textContent = savedPayrollStatuses[employee.id] || 'Verified';
+            statusCell.append(status);
+            row.append(statusCell);
+            return row;
+        }
+
+        function getChecks() {
+            return [...payrollRows.querySelectorAll('.payroll-check')];
+        }
+
+        function formatCurrency(value) {
+            return `₹${Math.round(value).toLocaleString('en-IN')}`;
+        }
+
+        function updatePayrollAmounts(row) {
+            const basic = Number(row.dataset.basicPay);
+            const allowances = Number(row.dataset.allowances);
+            const baseDeduction = Number(row.dataset.baseDeduction);
+            const leaveDays = Number(row.querySelector('.leave-days').value);
+            const leaveDeduction = Math.round((basic / 30) * leaveDays);
+            const deduction = baseDeduction + leaveDeduction;
+            row.querySelector('.deduction-value').textContent = formatCurrency(deduction);
+            row.querySelector('.net-pay-value').textContent = formatCurrency(basic + allowances - deduction);
+            updatePayrollTotals();
+            savePayrollSnapshot();
+        }
+
+        function updatePayrollTotals() {
+            const rows = [...payrollRows.rows];
+            const gross = rows.reduce((total, row) => total + Number(row.dataset.basicPay) + Number(row.dataset.allowances), 0);
+            const deductions = rows.reduce((total, row) => total + Number(row.querySelector('.deduction-value').textContent.replace(/[^\d]/g, '')), 0);
+            const verified = rows.filter(row => !row.querySelector('td:last-child .status').classList.contains('status-review')
+                && !row.querySelector('td:last-child .status').classList.contains('status-pending')).length;
+            const attention = rows.length - verified;
+            const progress = rows.length ? Math.round(verified / rows.length * 100) : 0;
+            document.getElementById('grossPayrollTotal').textContent = formatCurrency(gross);
+            document.getElementById('deductionPayrollTotal').textContent = formatCurrency(deductions);
+            document.getElementById('netPayrollTotal').textContent = formatCurrency(gross - deductions);
+            document.getElementById('payrollEmployeeTotal').textContent = rows.length.toLocaleString();
+            document.getElementById('verifiedPayrollCount').textContent = `${verified.toLocaleString()} / ${rows.length.toLocaleString()}`;
+            document.getElementById('attentionPayrollCount').textContent = `${attention.toLocaleString()} record${attention === 1 ? '' : 's'}`;
+            const progressBar = document.getElementById('payrollProgress');
+            progressBar.setAttribute('aria-valuenow', String(progress));
+            progressBar.firstElementChild.style.width = `${progress}%`;
+        }
+
+        function savePayrollSnapshot() {
+            const records = [...payrollRows.rows].map(row => ({
+                id: row.dataset.employeeId,
+                name: row.querySelector('.employee-name').textContent,
+                department: row.querySelector('.employee-email').textContent.split(' · ').slice(1).join(' · ') || 'Other',
+                basic: Number(row.dataset.basicPay),
+                allowances: Number(row.dataset.allowances),
+                deductions: Number(row.querySelector('.deduction-value').textContent.replace(/[^\d]/g, '')),
+                net: Number(row.querySelector('.net-pay-value').textContent.replace(/[^\d]/g, '')),
+                status: row.querySelector('td:last-child .status').textContent
+            }));
+            localStorage.setItem('payflow.payrollSnapshot', JSON.stringify(records));
+        }
+
+        function filterPayroll() {
+            const query = payrollSearch.value.trim().toLowerCase();
+            const matches = [...payrollRows.rows].filter(row => {
+                const match = row.textContent.toLowerCase().includes(query);
+                row.dataset.matchesFilter = String(match);
+                return match;
+            });
+            const pageCount = Math.max(1, Math.ceil(matches.length / pageSize));
+            currentPage = Math.min(currentPage, pageCount);
+            const start = (currentPage - 1) * pageSize;
+            for (const row of payrollRows.rows) {
+                const index = matches.indexOf(row);
+                row.hidden = index < start || index >= start + pageSize;
+            }
+            document.getElementById('payrollCount').textContent = matches.length
+                ? `Showing ${start + 1}–${Math.min(start + pageSize, matches.length)} of ${matches.length} loaded records`
+                : 'No payroll records match this search';
+            renderPagination(pageCount);
+            updateSelection();
+        }
+
+        function renderPagination(pageCount) {
+            const pagination = document.getElementById('payrollPagination');
+            pagination.replaceChildren();
+            if (pageCount < 2) return;
+            const addButton = (label, page, current = false, ariaLabel = label) => {
+                const button = document.createElement('button');
+                button.className = `page-number${current ? ' current' : ''}`;
+                button.type = 'button';
+                button.textContent = label;
+                button.setAttribute('aria-label', ariaLabel);
+                if (current) button.setAttribute('aria-current', 'page');
+                button.addEventListener('click', () => {
+                    currentPage = page;
+                    filterPayroll();
+                });
+                pagination.append(button);
+            };
+            addButton('‹', Math.max(1, currentPage - 1), false, 'Previous page');
+            for (let page = 1; page <= pageCount; page += 1) addButton(String(page), page, page === currentPage, `Page ${page}`);
+            addButton('›', Math.min(pageCount, currentPage + 1), false, 'Next page');
+        }
+
+        function updateSelection() {
+            const visibleChecks = getChecks().filter(check => !check.closest('tr').hidden);
+            const selected = getChecks().filter(check => check.checked).length;
+            const selectedVisible = visibleChecks.filter(check => check.checked).length;
+            selectionCount.textContent = `${selected} selected`;
+            prepareButton.disabled = selected === 0;
+            document.getElementById('deletePayrollSelected').disabled = selected === 0;
+            selectAll.checked = visibleChecks.length > 0 && selectedVisible === visibleChecks.length;
+            selectAll.indeterminate = selectedVisible > 0 && selectedVisible < visibleChecks.length;
+        }
+
+        payrollRows.addEventListener('change', event => {
+            if (event.target.matches('.payroll-check')) updateSelection();
+            if (event.target.matches('.leave-days')) {
+                const row = event.target.closest('tr');
+                savedLeaveDays[row.dataset.employeeId] = event.target.value;
+                localStorage.setItem('payflow.leaveDays', JSON.stringify(savedLeaveDays));
+                updatePayrollAmounts(row);
+            }
+        });
+        selectAll.addEventListener('change', () => {
+            for (const check of getChecks()) if (!check.closest('tr').hidden) check.checked = selectAll.checked;
+            updateSelection();
+        });
+        payrollSearch.addEventListener('input', () => {
+            currentPage = 1;
+            filterPayroll();
+        });
+        document.getElementById('deletePayrollSelected').addEventListener('click', () => {
+            const selectedRows = [...payrollRows.querySelectorAll('tr')]
+                .filter(row => row.querySelector('.payroll-check').checked);
+            if (!selectedRows.length || !confirm(`Delete ${selectedRows.length} selected payroll record(s)?`)) return;
+            for (const row of selectedRows) {
+                deletedPayrollIds.add(row.dataset.employeeId);
+                delete savedLeaveDays[row.dataset.employeeId];
+                row.remove();
+            }
+            localStorage.setItem('payflow.deletedPayroll', JSON.stringify([...deletedPayrollIds]));
+            localStorage.setItem('payflow.leaveDays', JSON.stringify(savedLeaveDays));
+            filterPayroll();
+            updatePayrollTotals();
+            savePayrollSnapshot();
+        });
+        prepareButton.addEventListener('click', () => {
+            const selectedChecks = getChecks().filter(check => check.checked);
+            const selected = selectedChecks.length;
+            if (!selected) return;
+            for (const check of selectedChecks) {
+                const row = check.closest('tr');
+                const status = row.querySelector('td:last-child .status');
+                status.textContent = 'Ready';
+                status.className = 'status';
+                savedPayrollStatuses[row.dataset.employeeId] = 'Ready';
+            }
+            updatePayrollTotals();
+            localStorage.setItem('payflow.payrollStatuses', JSON.stringify(savedPayrollStatuses));
+            const allReady = [...payrollRows.rows].every(row =>
+                row.querySelector('td:last-child .status').textContent === 'Ready');
+            const runStatus = document.getElementById('runStatus');
+            runStatus.textContent = allReady ? 'Ready for approval' : 'In review';
+            runStatus.classList.toggle('status-pending', !allReady);
+            prepareButton.textContent = 'Mark selected ready';
+            prepareButton.disabled = true;
+            document.getElementById('toast').textContent = `${selected} record(s) queued for approval. No payment was issued.`;
+            document.getElementById('toast').classList.add('visible');
+            window.setTimeout(() => document.getElementById('toast').classList.remove('visible'), 2600);
+            savePayrollSnapshot();
+        });
+
+        filterPayroll();
+    </script>
+    <script src="app.js" defer></script>
+</body>
+</html>

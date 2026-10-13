@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reports | Payflow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand-lockup" href="dashboard.html"><span class="brand-mark" aria-hidden="true">P</span><span class="brand-name">payflow<span>.</span></span></a>
+            <p class="nav-caption">WORKSPACE</p>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a class="nav-link" href="dashboard.html"><span class="nav-glyph" aria-hidden="true">◫</span>Overview</a>
+                <a class="nav-link" href="employees.html"><span class="nav-glyph" aria-hidden="true">♙</span>Employees</a>
+                <a class="nav-link" href="payroll.html"><span class="nav-glyph" aria-hidden="true">▤</span>Payroll</a>
+                <a class="nav-link" href="reports.html" aria-current="page"><span class="nav-glyph" aria-hidden="true">▥</span>Reports</a>
+                <a class="nav-link" href="settings.html"><span class="nav-glyph" aria-hidden="true">⚙</span>Account</a>
+            </nav>
+            <div class="sidebar-bottom"><div class="workspace-person"><span class="avatar" data-account-initials>PA</span><span class="person-meta"><strong data-account-name>Payroll admin</strong><span>Workspace administrator</span></span></div></div>
+        </aside>
+        <div class="main-area">
+            <header class="topbar"><span class="topbar-context">Payroll operations <span aria-hidden="true">/</span> Reports</span><div class="topbar-right"><span class="period-note">Monday, 16 June 2025</span><span class="topbar-avatar" data-account-initials aria-label="Account">PA</span></div></header>
+            <main class="page-content">
+                <div class="breadcrumbs"><span>Workspace</span><span aria-hidden="true">/</span><span>Reports</span></div>
+                <section class="page-heading"><div><p class="eyebrow">PAYROLL ANALYTICS</p><h1>Reports</h1><p class="page-subtitle">Review payroll spend and department-level totals.</p></div><div class="heading-actions"><button class="button button-primary" id="exportReport" type="button"><span aria-hidden="true">↓</span> Export report</button></div></section>
+                <section class="stat-grid" aria-label="Current payroll report metrics">
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Gross payroll</span><span class="stat-icon" aria-hidden="true">₹</span></div><p class="stat-value" id="reportGross">₹0</p><span class="stat-foot">Before deductions</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Net disbursement</span><span class="stat-icon" aria-hidden="true">↗</span></div><p class="stat-value" id="reportNet">₹0</p><span class="stat-foot" id="reportEmployeeCount">0 employees</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Total deductions</span><span class="stat-icon gold" aria-hidden="true">−</span></div><p class="stat-value" id="reportDeductions">₹0</p><span class="stat-foot">Tax, benefits, and leave</span></article>
+                    <article class="stat-card"><div class="stat-topline"><span class="stat-label">Average net pay</span><span class="stat-icon gold" aria-hidden="true">↗</span></div><p class="stat-value" id="reportAverage">₹0</p><span class="stat-foot">Per employee in this run</span></article>
+                </section>
+                <div class="content-grid">
+                    <section class="panel"><header class="panel-header"><div><h2 class="panel-title">Department breakdown</h2><p class="panel-description">Gross payroll by department</p></div></header><div class="panel-body"><div class="chart-area" id="departmentChart" role="img" aria-label="Department gross payroll chart"></div><div class="chart-labels" id="departmentChartLabels"></div><div class="legend"><span class="legend-item"><span class="legend-dot"></span>Gross payroll</span></div></div></section>
+                    <section class="panel"><header class="panel-header"><div><h2 class="panel-title">Payroll composition</h2><p class="panel-description">Current run totals by pay category</p></div></header><div class="panel-body"><div class="run-summary"><span class="run-label">Basic salary</span><span class="run-value" id="reportBasic">₹0</span><div class="progress-track run-progress"><div class="progress-fill" id="basicProgress" style="width:0%"></div></div><span class="run-label">Allowances</span><span class="run-value" id="reportAllowances">₹0</span><div class="progress-track run-progress"><div class="progress-fill" id="allowanceProgress" style="width:0%;background:#d5a14f"></div></div><span class="run-label">Deductions</span><span class="run-value" id="compositionDeductions">− ₹0</span><div class="progress-track run-progress"><div class="progress-fill" id="deductionProgress" style="width:0%;background:#cb7770"></div></div></div></div></section>
+                </div>
+                <section class="panel" style="margin-top:18px"><header class="panel-header"><div><h2 class="panel-title">Department breakdown</h2><p class="panel-description">Payroll by department</p></div><span class="stat-foot">Amounts in INR</span></header><div class="table-wrap"><table id="departmentTable"><thead><tr><th>Department</th><th>Employees</th><th>Gross pay</th><th>Deductions</th><th>Net pay</th><th>Share</th></tr></thead><tbody id="departmentRows"></tbody></table></div><footer class="table-footer"><span id="reportPeriod">Payroll period: Current run</span><span>Total net disbursement <strong id="reportTotalNet">₹0</strong></span></footer></section>
+            </main>
+        </div>
+    </div>
+    <script>
+        const reportRows = document.getElementById('departmentRows');
+        const formatCurrency = value => `₹${Math.round(value).toLocaleString('en-IN')}`;
+        const fallbackRecords = [
+            { id: 'EMP-204', name: 'Employee 204', department: 'Engineering', basic: 92000, allowances: 8000, deductions: 11200, net: 88800, status: 'Verified' },
+            { id: 'EMP-203', name: 'Employee 203', department: 'Finance', basic: 84500, allowances: 7500, deductions: 10400, net: 81600, status: 'Verified' },
+            { id: 'EMP-202', name: 'Employee 202', department: 'People', basic: 68000, allowances: 5000, deductions: 7200, net: 65800, status: 'Review' },
+            { id: 'EMP-201', name: 'Employee 201', department: 'Operations', basic: 76200, allowances: 6500, deductions: 9100, net: 73600, status: 'Verified' },
+            { id: 'EMP-200', name: 'Employee 200', department: 'Engineering', basic: 73500, allowances: 6000, deductions: 8800, net: 70700, status: 'Missing tax ID' }
+        ];
+        const storedSnapshot = JSON.parse(localStorage.getItem('payflow.payrollSnapshot') || 'null');
+        let records = storedSnapshot || fallbackRecords;
+        const persistedPayrollIds = new Set((storedSnapshot || []).map(record => record.id));
+
+        function renderReport() {
+            const deletedEmployees = new Set(JSON.parse(localStorage.getItem('payflow.deletedEmployees') || '[]'));
+            const deletedPayroll = new Set(JSON.parse(localStorage.getItem('payflow.deletedPayroll') || '[]'));
+            const updates = JSON.parse(localStorage.getItem('payflow.employeeUpdates') || '{}');
+            const createdEmployees = JSON.parse(localStorage.getItem('payflow.createdEmployees') || '[]');
+            const leaveDays = JSON.parse(localStorage.getItem('payflow.leaveDays') || '{}');
+            const recordsById = new Map(records.map(record => [record.id, { ...record }]));
+            for (const employee of createdEmployees) {
+                if (!recordsById.has(employee.id)) {
+                    const basic = Number(employee.salary);
+                    recordsById.set(employee.id, {
+                        id: employee.id, name: employee.name, department: employee.department,
+                        basic, allowances: Math.round(basic * 0.08),
+                        deductions: Math.round(basic * 0.12), net: 0, status: 'Verified'
+                    });
+                }
+                const record = recordsById.get(employee.id);
+                const basic = Number(employee.salary);
+                record.name = employee.name;
+                record.department = employee.department;
+                record.basic = basic;
+                record.allowances = Math.round(basic * 0.08);
+            }
+            for (const [id, update] of Object.entries(updates)) {
+                let record = recordsById.get(id);
+                if (!record && update.employmentStatus === 'active') {
+                    const basic = Number(update.salary);
+                    record = {
+                        id, name: update.name, department: update.department,
+                        basic, allowances: Math.round(basic * 0.08),
+                        deductions: Math.round(basic * 0.12), net: 0, status: 'Verified'
+                    };
+                    recordsById.set(id, record);
+                }
+                if (!record) continue;
+                const basic = Number(update.salary);
+                record.name = update.name;
+                record.department = update.department;
+                record.basic = basic;
+                record.allowances = Math.round(basic * 0.08);
+                record.deductions = Math.round(basic * 0.12);
+            }
+            const inactiveCreatedEmployeeIds = new Set(createdEmployees
+                .filter(employee => employee.employmentStatus === 'inactive').map(employee => employee.id));
+            records = [...recordsById.values()]
+                .filter(record => !deletedEmployees.has(record.id) && !deletedPayroll.has(record.id)
+                    && updates[record.id]?.employmentStatus !== 'inactive'
+                    && !inactiveCreatedEmployeeIds.has(record.id))
+                .map(record => {
+                    const basic = Number(record.basic);
+                    const allowances = Number(record.allowances);
+                    const leaveDeduction = Math.round((basic / 30) * Number(leaveDays[record.id] || 0));
+                    const baseDeduction = updates[record.id] || !persistedPayrollIds.has(record.id)
+                        ? Number(record.deductions)
+                        : Number(record.deductions) - leaveDeduction;
+                    const deductions = baseDeduction + leaveDeduction;
+                    return { ...record, deductions, net: basic + allowances - deductions };
+                });
+            const totals = records.reduce((result, record) => {
+                result.basic += Number(record.basic);
+                result.allowances += Number(record.allowances);
+                result.deductions += Number(record.deductions);
+                result.net += Number(record.net);
+                return result;
+            }, { basic: 0, allowances: 0, deductions: 0, net: 0 });
+            const gross = totals.basic + totals.allowances;
+            document.getElementById('reportGross').textContent = formatCurrency(gross);
+            document.getElementById('reportNet').textContent = formatCurrency(totals.net);
+            document.getElementById('reportDeductions').textContent = formatCurrency(totals.deductions);
+            document.getElementById('reportAverage').textContent = formatCurrency(records.length ? totals.net / records.length : 0);
+            document.getElementById('reportEmployeeCount').textContent = `${records.length.toLocaleString()} employees`;
+            document.getElementById('reportTotalNet').textContent = formatCurrency(totals.net);
+            document.getElementById('reportBasic').textContent = formatCurrency(totals.basic);
+            document.getElementById('reportAllowances').textContent = formatCurrency(totals.allowances);
+            document.getElementById('compositionDeductions').textContent = `− ${formatCurrency(totals.deductions)}`;
+            document.getElementById('basicProgress').style.width = `${gross ? totals.basic / gross * 100 : 0}%`;
+            document.getElementById('allowanceProgress').style.width = `${gross ? totals.allowances / gross * 100 : 0}%`;
+            document.getElementById('deductionProgress').style.width = `${gross ? Math.min(totals.deductions / gross * 100, 100) : 0}%`;
+            reportRows.replaceChildren();
+
+            const departments = new Map();
+            for (const record of records) {
+                const department = record.department || 'Other';
+                const totals = departments.get(department) || { employees: 0, gross: 0, deductions: 0, net: 0 };
+                totals.employees += 1;
+                totals.gross += Number(record.basic) + Number(record.allowances);
+                totals.deductions += Number(record.deductions);
+                totals.net += Number(record.net);
+                departments.set(department, totals);
+            }
+            const sortedDepartments = [...departments.entries()].sort((first, second) => second[1].gross - first[1].gross);
+            for (const [department, amounts] of sortedDepartments) {
+                const row = document.createElement('tr');
+                const values = [department, amounts.employees.toLocaleString(), formatCurrency(amounts.gross),
+                    formatCurrency(amounts.deductions), formatCurrency(amounts.net),
+                    `${gross ? (amounts.gross / gross * 100).toFixed(1) : '0.0'}%`];
+                values.forEach((value, index) => {
+                    const cell = document.createElement('td');
+                    if (index === 0) {
+                        const strong = document.createElement('strong');
+                        strong.textContent = value;
+                        cell.append(strong);
+                    } else {
+                        cell.textContent = value;
+                    }
+                    row.append(cell);
+                });
+                reportRows.append(row);
+            }
+
+            const chart = document.getElementById('departmentChart');
+            const labels = document.getElementById('departmentChartLabels');
+            chart.replaceChildren();
+            labels.replaceChildren();
+            for (const [department, amounts] of sortedDepartments) {
+                const column = document.createElement('div');
+                column.className = 'chart-column';
+                const bar = document.createElement('span');
+                bar.className = 'chart-bar';
+                bar.style.height = `${gross ? Math.max(amounts.gross / gross * 100, 3) : 3}%`;
+                bar.setAttribute('aria-label', `${department}: ${formatCurrency(amounts.gross)}`);
+                column.append(bar);
+                chart.append(column);
+                const label = document.createElement('span');
+                label.textContent = department;
+                labels.append(label);
+            }
+        }
+
+        renderReport();
+        document.getElementById('exportReport').addEventListener('click', () => {
+            const rows = [
+                ['Payroll report'],
+                ['Gross payroll', document.getElementById('reportGross').textContent],
+                ['Net disbursement', document.getElementById('reportNet').textContent],
+                ['Total deductions', document.getElementById('reportDeductions').textContent],
+                ['Employees', String(records.length)],
+                [],
+                ['Department', 'Employees', 'Gross pay', 'Deductions', 'Net pay', 'Share'],
+                ...[...document.querySelectorAll('#departmentTable tbody tr')].map(row => [...row.cells].map(cell => cell.innerText.trim()))
+            ];
+            const csv = rows.map(row => row.map(value => `"${value.replaceAll('"', '""')}"`).join(',')).join('\n');
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+            link.download = 'payroll-report.csv';
+            link.click();
+            URL.revokeObjectURL(link.href);
+        });
+    </script>
+    <script src="app.js" defer></script>
+</body>
+</html>

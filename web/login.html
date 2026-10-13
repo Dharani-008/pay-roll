@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f9f7">
+    <title>Sign in | Payflow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+    <main class="login-layout">
+        <section class="login-form-panel" aria-labelledby="login-title">
+            <div class="login-form-inner">
+                <a class="brand-lockup login-brand" href="login.html" aria-label="Payflow home">
+                    <span class="brand-mark" aria-hidden="true">P</span>
+                    <span class="brand-name">payflow<span>.</span></span>
+                </a>
+                <p class="eyebrow">Employee payroll system</p>
+                <h1 class="login-heading" id="login-title">Welcome back</h1>
+                <p class="login-copy">Sign in to continue to your workspace.</p>
+                <form class="login-form" id="loginForm" action="/api/login" method="post">
+                    <div class="field"><label for="username">Username</label><input id="username" name="username" type="text" autocomplete="username" placeholder="Enter username" required></div>
+                    <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required></div>
+                    <label class="check-row"><input type="checkbox" name="remember"> Keep me signed in</label>
+                    <p class="form-notice" id="loginNotice" role="status" aria-live="polite"></p>
+                    <button class="button button-primary" type="submit">Sign in <span aria-hidden="true">→</span></button>
+                </form>
+                <p class="login-support">Need access? Contact your payroll administrator.</p>
+            </div>
+        </section>
+        <aside class="login-aside" aria-label="Payroll overview">
+            <div class="login-aside-top">PAYFLOW / WORKSPACE</div>
+            <div class="login-aside-content">
+                <p class="eyebrow" style="color:#b6d8ca">PAYROLL WORKSPACE</p>
+                <h2>Payroll records, clear and ready for review.</h2>
+                <div class="login-aside-list">
+                    <div class="login-aside-row"><span class="login-check" aria-hidden="true">✓</span> Manage employee records in one place</div>
+                    <div class="login-aside-row"><span class="login-check" aria-hidden="true">✓</span> Review payroll totals before approval</div>
+                    <div class="login-aside-row"><span class="login-check" aria-hidden="true">✓</span> Export department-level payroll reports</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginNotice = document.getElementById('loginNotice');
+        const loginButton = loginForm.querySelector('button[type="submit"]');
+        loginForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            loginNotice.textContent = '';
+            loginNotice.className = 'form-notice';
+            loginButton.disabled = true;
+            try {
+                const response = await fetch(loginForm.action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(new FormData(loginForm))
+                });
+                const result = await response.json();
+                if (result.redirect) {
+                    location.href = result.redirect;
+                    return;
+                }
+                loginNotice.textContent = result.error || 'Sign in could not be completed.';
+                loginNotice.classList.add('notice-error');
+            } catch (error) {
+                if (error instanceof TypeError) {
+                    loginNotice.textContent = 'Could not connect to the server. Check that it is running and try again.';
+                } else if (error instanceof SyntaxError) {
+                    loginNotice.textContent = 'The server returned an invalid response. Try again.';
+                } else {
+                    throw error;
+                }
+                loginNotice.classList.add('notice-error');
+            } finally {
+                loginButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
