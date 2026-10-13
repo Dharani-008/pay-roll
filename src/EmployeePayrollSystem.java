@@ -2,8 +2,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.BindException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -40,13 +38,8 @@ public class EmployeePayrollSystem {
     public static void main(String[] args) throws Exception {
         account = loadAccount();
 
-        HttpServer server;
-        InetAddress loopback = InetAddress.getLoopbackAddress();
-        try {
-            server = HttpServer.create(new InetSocketAddress(loopback, 8080), 0);
-        } catch (BindException e) {
-            server = HttpServer.create(new InetSocketAddress(loopback, 0), 0);
-        }
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8080"));
+        HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", port), 0);
 
         server.createContext("/", EmployeePayrollSystem::handleRequest);
         server.start();
